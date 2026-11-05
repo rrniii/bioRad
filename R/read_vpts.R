@@ -91,14 +91,13 @@ read_vpts <- function(files, data_frame = FALSE, ...) {
 #' @noRd
 read_vpts_csv <- function(files, data_frame = FALSE) {
 
-  #suppressMessages(
-  data <- readr::read_csv(files, show_col_types = FALSE)
-  #,
-  #col_types = readr::cols(
-  #   .default = readr::col_guess(),  
-  #   `...1` = readr::col_skip()      # Skip unnamed columns
-  #  ))
-  #)
+  # VPTS fields have schema-defined types. Sampling sparse height profiles can
+  # miss every numeric value and incorrectly infer a logical column.
+  header <- readr::read_csv(files[1], n_max = 0,
+                           col_types = readr::cols(.default = readr::col_character()),
+                           show_col_types = FALSE)
+  data <- readr::read_csv(files, col_types = vpts_csv_col_types(names(header)),
+                         show_col_types = FALSE)
 
   #Validate the data
   validate_vpts(data)
@@ -117,6 +116,24 @@ read_vpts_csv <- function(files, data_frame = FALSE) {
   }
 
   return(data)
+}
+
+# Use only fields present in the input, including schema aliases. Unknown
+# extension fields retain the reader's existing type-inference behaviour.
+vpts_csv_col_types <- function(column_names) {
+  collectors <- lapply(column_names, function(field) {
+    field_schema <- get_field_schema(field, bioRad::vpts_schema)
+    if (is.null(field_schema)) return(readr::col_guess())
+    switch(as.character(field_schema$type),
+           string = readr::col_character(),
+           number = readr::col_double(),
+           integer = readr::col_double(),
+           datetime = readr::col_datetime(),
+           boolean = readr::col_logical(),
+           stop("Unsupported VPTS schema type for field: ", field))
+  })
+  names(collectors) <- column_names
+  do.call(readr::cols, collectors)
 }
 #' Read time series of vertical profiles (`vpts`) from hdf5 file(s)
 #'
