@@ -1,6 +1,6 @@
 # Avocet BioRad reader fix
 
-This is a local maintenance build, version `0.12.0.1`, based on official
+This is an Avocet maintenance build, version `0.12.0.1`, based on official
 BioRad `0.12.0` tag commit `4f3a8c7ee12af26d5ca799a2b9a4b6c522702623`.
 It is not an official BioRad release.
 
@@ -17,5 +17,13 @@ provenance file. Integration calculations and dependency requirements retain
 their official `0.12.0` behavior. In particular, this build does not require an
 upgrade of readr or vroom.
 
-The original proposal was tested separately. This stable backport must pass its
-own installed-package regression and data validation before activation.
+The stable backport passed all 27 installed-package regression assertions and a
+real-data comparison preserving 284 finite velocity values, 400 UNDETECT values
+and 5,016 NODATA values. It is active in Ryan's JASMIN user library. Installed
+namespace comparison against 0.12.0 confirmed that only the CSV reader and its
+new helper differ. Full-archive validation remains in progress.
+
+The release tag `avocet-0.12.0.1` points to the tested source commit
+`2aede1c480f8ea8957c058da87975913f9d02074`; later branch commits document publication
+and validation without altering the tagged package. See the
+[release notes](https://github.com/rrniii/bioRad/releases/tag/avocet-0.12.0.1).

@@ -15,6 +15,36 @@ knitr::opts_chunk$set(
 
 # bioRad <img src="man/figures/logo.png" align="right" alt="" width="120">
 
+## Avocet maintenance fork
+
+This fork provides **BioRad 0.12.0.1**, a reader-only fix based on official BioRad
+0.12.0. It preserves sparse numeric VPTS measurements and the distinction between
+NODATA (`NA`) and UNDETECT (`NaN`). Existing analysis calls and integration
+calculations are unchanged. This is not an official upstream BioRad release.
+
+For existing BioRad users, install the exact tested source in a fresh R session:
+
+```r
+install.packages("remotes")
+remotes::install_github(
+  "rrniii/bioRad",
+  ref = "2aede1c480f8ea8957c058da87975913f9d02074",
+  upgrade = "never"
+)
+```
+
+Restart R, then check `packageVersion("bioRad")` returns `0.12.0.1`. Continue
+using `library(bioRad)` and your existing analysis code.
+
+See the [Avocet release and validation notes](https://github.com/rrniii/bioRad/releases/tag/avocet-0.12.0.1)
+and [patch provenance](AVOCET_PATCH.md). The release tag identifies the tested
+commit; later changes to this branch may update documentation.
+Full validation of the rebuilt Avocet archive is still in progress.
+
+The documentation and badges below describe the original upstream project.
+
+---
+
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/bioRad)](https://cran.r-project.org/package=bioRad)
 [![R-CMD-check](https://github.com/adokter/bioRad/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/adokter/bioRad/actions/workflows/R-CMD-check.yaml)
